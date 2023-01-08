@@ -33,18 +33,18 @@ public class UserService implements UserDetailsService {
         this.roleRepository = roleRepository;
     }
 
-    public User findByName(String name) {
-        return userRepository.findByName(name);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = findByName(name);
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException("Unknown user: " + name);
+            throw new UsernameNotFoundException("Unknown user: " + email);
         }
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), mapRolesToAuthorities(user.getRoles()));
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {

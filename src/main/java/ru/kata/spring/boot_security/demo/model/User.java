@@ -5,9 +5,7 @@ import jdk.jfr.Name;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.util.Collection;
 
 @Entity
@@ -23,6 +21,16 @@ public class User {
     @Size(min = 2, max = 30, message = "Имя должно быть от 2 до 30 символов")
     @Column(name = "name")
     private String name;
+
+    @NotEmpty(message = "Фамилия не должна быть пустой")
+    @Size(min = 2, max = 30, message = "Фамилия должна быть от 2 до 30 символов")
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Min(value = 1, message = "Возраст должен быть от 1 года до 150 лет")
+    @Max(value = 150, message = "Возраст должен быть от 1 года до 150 лет")
+    @Column(name = "age")
+    private int age;
 
     @NotEmpty(message = "Пароль не должен быть пустым")
     @Size(min = 5, message = "Минимальная длина пароля - 5 символов")
@@ -40,10 +48,13 @@ public class User {
     public User() {
     }
 
-    public User(String name, String password, String email) {
+    public User(String name, String lastName, int age, String password, String email, Collection<Role> roles) {
         this.name = name;
+        this.lastName = lastName;
+        this.age = age;
         this.password = password;
         this.email = email;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -60,6 +71,22 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
     }
 
     public String getPassword() {

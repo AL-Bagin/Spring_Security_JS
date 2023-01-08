@@ -54,8 +54,15 @@ public class CrudService {
     public void update(long id, User user) {
         User updateUser = show(id);
         updateUser.setName(user.getName());
-        updateUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        updateUser.setLastName(user.getLastName());
+        updateUser.setAge(user.getAge());
+        if (!updateUser.getPassword().equals(user.getPassword())) {
+            updateUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         updateUser.setEmail(user.getEmail());
+        if (user.getId() != 1) {
+            updateUser.setRoles(user.getRoles());
+        }
         userRepository.save(updateUser);
     }
 }

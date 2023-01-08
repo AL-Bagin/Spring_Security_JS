@@ -26,14 +26,21 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         User user = (User)target;
+//        Проверяем меняют ли эмеил
+        try {
+            User ValidUser = userService.findByEmail(user.getEmail());
+            if (ValidUser.getId() == user.getId()) {
+                return;
+            }
+        } catch (Exception ignored) {}
 
         try {
-            userService.loadUserByUsername(user.getName());
+            userService.loadUserByUsername(user.getEmail());
         } catch (UsernameNotFoundException ignored) {
             return;
         }
 
-        errors.rejectValue("name", "", "Человек с таким именем уже существует");
+        errors.rejectValue("email", "", "Человек с таким Email уже существует");
 
     }
 }
