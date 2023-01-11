@@ -40,11 +40,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().permitAll()
                 .and()
-                .formLogin().successHandler(successUserHandler)
+                .formLogin().loginPage("/").successHandler(successUserHandler)
                 .permitAll()
                 .and()
-                .logout()
+                .logout().logoutSuccessUrl("/")
                 .permitAll();
+//
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

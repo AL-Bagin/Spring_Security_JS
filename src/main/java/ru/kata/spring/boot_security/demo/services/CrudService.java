@@ -43,9 +43,7 @@ public class CrudService {
         userRepository.save(user);
     }
 
-    public void delete(long id) {
-        userRepository.deleteById(id);
-    }
+    public void delete(long id) { userRepository.deleteById(id); }
 
     public User show(long id) {
         return userRepository.findById(id).orElse(null);

@@ -1,7 +1,8 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.Banner;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,10 +13,9 @@ import ru.kata.spring.boot_security.demo.services.CrudService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
-import javax.transaction.Transactional;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -35,9 +35,22 @@ public class UsersController {
         this.userValidator = userValidator;
     }
 
-    @GetMapping()
-    public String main() {
-        return "/main";
+    @GetMapping("/")
+    public String main(@RequestParam(value = "error", required = false) String error,
+                       @RequestParam(value = "logout", required = false) String logout,
+                       Model model) {
+        model.addAttribute("error", error != null);
+        model.addAttribute("logout", logout != null);
+        return "/login";
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            request.getSession().invalidate();
+        }
+        return "redirect:/?logout";
     }
 
     @GetMapping("/admin")
@@ -69,7 +82,9 @@ public class UsersController {
 
     @DeleteMapping("/admin/{id}")
     public String delete(@PathVariable("id") long id) {
-        crudService.delete(id);
+        if (id != 1) {
+            crudService.delete(id);
+        }
         return "redirect:/admin";
     }
 
@@ -82,14 +97,14 @@ public class UsersController {
     }
 
     @PatchMapping("admin/{id}")
-    public String update(@ModelAttribute("us") User us,
+    public String update(Model model, @ModelAttribute("us") User us, BindingResult bindingResult,
                          @PathVariable("id") long id) {
 
-//        userValidator.validate(user, bindingResult);
+//        userValidator.validate(us, bindingResult);
 //        if (bindingResult.hasErrors()) {
 //            List<Role> roles = crudService.indexRoles();
 //            model.addAttribute("allRoles", roles);
-//            return "/index";
+//            return "redirect:/admin";
 //        }
         crudService.update(id, us);
         return "redirect:/admin";
@@ -99,6 +114,6 @@ public class UsersController {
     public String main(Principal principal, Model model) {
         User user = userService.findByEmail(principal.getName());
         model.addAttribute("user", user);
-        return "/userInfo";
+        return "/user";
     }
 }
