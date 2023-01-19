@@ -38,14 +38,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/admin/**").hasRole("ADMIN")
                 .antMatchers("/user/**").hasAnyRole("ADMIN", "USER")
+                .antMatchers("api/admin/**").hasRole("ADMIN")
+                .antMatchers("api/auth").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin().loginPage("/").successHandler(successUserHandler)
                 .permitAll()
                 .and()
                 .logout().logoutSuccessUrl("/")
-                .permitAll();
-//
+                .permitAll()
+                .and()
+                .csrf().disable()
+                .httpBasic();
     }
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -16,7 +16,7 @@
         <div class="alert alert-success" role="alert" th:if="${logout}">
             You have been signed out
         </div>
-        <input th:name="${_csrf.getParameterName()}" th:value="${_csrf.getToken()}" type="hidden">
+<!--        <input th:name="${_csrf.getParameterName()}" th:value="${_csrf.getToken()}" type="hidden">-->
         <div>
             <input type="login" name="username" id="username" class="form-control" placeholder="Email address" required>
         </div>

@@ -17,32 +17,32 @@ public class User {
     @Column(name = "id")
     private long id;
 
-    @NotEmpty(message = "Имя не должно быть пустым")
-    @Size(min = 2, max = 30, message = "Имя должно быть от 2 до 30 символов")
+//    @NotEmpty(message = "Имя не должно быть пустым")
+//    @Size(min = 2, max = 30, message = "Имя должно быть от 2 до 30 символов")
     @Column(name = "name")
     private String name;
 
-    @NotEmpty(message = "Фамилия не должна быть пустой")
-    @Size(min = 2, max = 30, message = "Фамилия должна быть от 2 до 30 символов")
+//    @NotEmpty(message = "Фамилия не должна быть пустой")
+//    @Size(min = 2, max = 30, message = "Фамилия должна быть от 2 до 30 символов")
     @Column(name = "last_name")
     private String lastName;
 
-    @Min(value = 1, message = "Возраст должен быть от 1 года до 150 лет")
-    @Max(value = 150, message = "Возраст должен быть от 1 года до 150 лет")
+//    @Min(value = 1, message = "Возраст должен быть от 1 года до 150 лет")
+//    @Max(value = 150, message = "Возраст должен быть от 1 года до 150 лет")
     @Column(name = "age")
     private int age;
 
-    @NotEmpty(message = "Пароль не должен быть пустым")
-    @Size(min = 5, message = "Минимальная длина пароля - 5 символов")
+//    @NotEmpty(message = "Пароль не должен быть пустым")
+//    @Size(min = 5, message = "Минимальная длина пароля - 5 символов")
     @Column(name = "password")
     private String password;
 
-    @NotEmpty(message = "Email не должен быть пустым")
-    @Email(message = "Введите корректный email")
+//    @NotEmpty(message = "Email не должен быть пустым")
+//    @Email(message = "Введите корректный email")
     @Column(name = "email")
     private String email;
 
-    @NotEmpty(message = "У пользователя должна быть роль")
+//    @NotEmpty(message = "У пользователя должна быть роль")
     @ManyToMany
     private Collection<Role> roles;
     public User() {
@@ -55,6 +55,11 @@ public class User {
         this.password = password;
         this.email = email;
         this.roles = roles;
+    }
+
+    public User(long id, String name, String lastName, int age, String password, String email, Collection<Role> roles) {
+        this(name, lastName, age, password, email, roles);
+        this.id = id;
     }
 
     public Long getId() {

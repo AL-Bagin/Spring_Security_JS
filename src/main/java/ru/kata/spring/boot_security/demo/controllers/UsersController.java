@@ -21,20 +21,6 @@ import java.util.List;
 @Controller
 public class UsersController {
 
-    private CrudService crudService;
-
-    private UserService userService;
-
-    private UserValidator userValidator;
-
-    @Autowired
-    public UsersController(CrudService crudService, UserService userService,
-                           UserValidator userValidator) {
-        this.crudService = crudService;
-        this.userService = userService;
-        this.userValidator = userValidator;
-    }
-
     @GetMapping("/")
     public String main(@RequestParam(value = "error", required = false) String error,
                        @RequestParam(value = "logout", required = false) String logout,
@@ -54,66 +40,12 @@ public class UsersController {
     }
 
     @GetMapping("/admin")
-    public String index(Principal principal, Model model) {
-        model.addAttribute("newUser", new User());
-        List<Role> roles = crudService.indexRoles();
-        model.addAttribute("allRoles", roles);
-        model.addAttribute("allUsers", crudService.index());
-        User user = userService.findByEmail(principal.getName());
-        model.addAttribute("user", user);
+    public String index() {
         return "/index";
     }
 
-    @PostMapping("/admin")
-    public String create(Principal principal, Model model, @ModelAttribute("newUser") @Valid User newUser, BindingResult bindingResult) {
-
-        userValidator.validate(newUser, bindingResult);
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("allUsers", crudService.index());
-            User user = userService.findByEmail(principal.getName());
-            model.addAttribute("user", user);
-            List<Role> roles = crudService.indexRoles();
-            model.addAttribute("allRoles", roles);
-            return "/index";
-        }
-        crudService.save(newUser);
-        return "redirect:/admin";
-    }
-
-    @DeleteMapping("/admin/{id}")
-    public String delete(@PathVariable("id") long id) {
-        if (id != 1) {
-            crudService.delete(id);
-        }
-        return "redirect:/admin";
-    }
-
-    @GetMapping("admin/{id}/edit")
-    public String edit(Model model, @PathVariable("id") long id) {
-        model.addAttribute("user", crudService.show(id));
-        List<Role> roles = crudService.indexRoles();
-        model.addAttribute("allRoles", roles);
-        return "/edit";
-    }
-
-    @PatchMapping("admin/{id}")
-    public String update(Model model, @ModelAttribute("us") User us, BindingResult bindingResult,
-                         @PathVariable("id") long id) {
-
-//        userValidator.validate(us, bindingResult);
-//        if (bindingResult.hasErrors()) {
-//            List<Role> roles = crudService.indexRoles();
-//            model.addAttribute("allRoles", roles);
-//            return "redirect:/admin";
-//        }
-        crudService.update(id, us);
-        return "redirect:/admin";
-    }
-
     @GetMapping("/user")
-    public String main(Principal principal, Model model) {
-        User user = userService.findByEmail(principal.getName());
-        model.addAttribute("user", user);
+    public String main() {
         return "/user";
     }
 }
