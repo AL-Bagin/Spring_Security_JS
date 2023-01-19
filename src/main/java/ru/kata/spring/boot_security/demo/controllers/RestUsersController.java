@@ -2,6 +2,7 @@ package ru.kata.spring.boot_security.demo.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -22,21 +23,21 @@ public class RestUsersController {
 
     private UserValidator userValidator;
 
+    @Autowired
     public RestUsersController(CrudService crudService, UserService userService, UserValidator userValidator) {
         this.crudService = crudService;
         this.userService = userService;
         this.userValidator = userValidator;
     }
 
-    @Autowired
-
-
     @GetMapping("/admin/users")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<List<User>> getUsers() {
         List<User> allUsers = crudService.index();
         return new ResponseEntity<>(allUsers, HttpStatus.OK);
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping("/admin/users/{id}")
     public ResponseEntity<User> getUser(@PathVariable("id") long id) {
         User user = crudService.show(id);
@@ -44,6 +45,7 @@ public class RestUsersController {
     }
 
     @PostMapping("/admin/users")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid User user, BindingResult bindingResult) {
         userValidator.validate(user, bindingResult);
         if (bindingResult.hasErrors()) {
@@ -54,12 +56,14 @@ public class RestUsersController {
     }
 
     @PatchMapping("/admin/users/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> editUser (@PathVariable("id") Long id, @RequestBody User user) {
         crudService.update(id, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/admin/users/{id}")
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         crudService.delete(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
